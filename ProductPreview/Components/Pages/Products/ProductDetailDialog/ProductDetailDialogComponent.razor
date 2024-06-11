@@ -1,0 +1,73 @@
+﻿<MudDialog Class="animated rounded-3 p-2 overflow-hidden">
+    <TitleContent>
+        <div class="d-flex justify-content-end align-items-center w-100">
+            <span class="float-left btn" @onclick=Close>&#128473;</span>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <div class="row">
+            <div class="col-6">
+                <div class="mt-2">
+                    <img src="/images/Hamburger.jfif" class="w-100 h-100 rounded-4" />
+                </div>
+                <h5 class="d-flex justify-content-between align-items-center mt-2"><span>Special Burger</span> <span class="text-muted">$9.14</span></h5>
+                <p class="mt-2">Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                <div class="d-flex justify-content-start align-items-center gap-x-3 mt-2">
+                    <button class="btn btn-primary" @onclick="@Increament">+</button>
+                    <h5>@Counter</h5>
+                    <button class="btn btn-secondary" @onclick="@Decreament">-</button>
+                </div>
+            </div>
+            <div class="col-6">
+                <h5>Cheese</h5>
+                <div class="w-75">
+                    <MudSelect T="string" Label="Chees" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Parmejan")" />
+                        <MudSelectItem Value="@("Chedar")" />
+                        <MudSelectItem Value="@("Tabrizi")" />
+                    </MudSelect>
+                </div>
+
+                <div class="mt-2">
+                    <label for="Desc">Description</label>
+                    <InputTextArea id="Desc" class="form-control" col="5" rows="10" @bind-Value=@Description />
+                </div>
+            </div>
+
+        </div>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-50 py-3 rounded-4" OnClick="Close">Add to Bucket</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    void Close() => MudDialog.Close(DialogResult.Ok(true));
+
+
+    private int Counter = 1;
+
+    private string Description { get; set; } = string.Empty;
+
+    private void Increament()
+    {
+        Counter++;
+    }
+    private void Decreament()
+    {
+        Counter--;
+    }
+}
+
+
+<style>
+    .animated {
+        transition: 500ms all ease;
+    }
+</style>

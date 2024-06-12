@@ -10,7 +10,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
-builder.Services.AddSingleton<ApplicationDrawer>();
+builder.Services.AddSingleton<ApplicationDrawerService>(new ApplicationDrawerService());
 
 var app = builder.Build();
 

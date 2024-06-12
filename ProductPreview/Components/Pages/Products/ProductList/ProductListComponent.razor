@@ -3,86 +3,163 @@
 @inherits ComponentBase
 @attribute [Route(ApplicationRoutes.Products)]
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12 mt-2 d-flex justify-content-start align-items-center">
-            <h4>Order #5454 - Table(T-13 , T-15)</h4>
+<MudLayout>
+
+    <MudDrawer @bind-Open="IsDrawerOpen" Anchor="Anchor.Right" Variant="DrawerVariant.Responsive" Class="p-2" Width="30vw">
+        <div>
+            <h4>Current Order :</h4>
+            <p>Table(T-13 , T-15)</p>
         </div>
-        <div class="col-12 mt-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex justify-content-start align-items-center col-6 gap-x-3">
-                    <InputText @bind-Value=SearchValue class="form-control" placeholder="Search..." />
-                    <button class="btn btn-primary rounded-3">Search</button>
-                </div>
+        <hr />
+        @if (SelectedProducts.Count > 0)
+        {
+            <div class="d-flex flex-column h-100 justify-content-between align-items-center">
 
-                <button class="btn btn-secondary me-4">&#127828;</button>
-            </div>
-        </div>
-
-        <div class="col-12 mt-3">
-            <div class="d-flex justify-content-start align-items-center gap-x-3">
-
-                <InputRadioGroup Name="color" @bind-Value="SelectedCategory">
-
-                    @foreach (var item in Categories)
+                <div class="w-100 flex-grow-1" style="max-height:45vh; overflow-x:hidden;">
+                    @foreach (var selected in SelectedProducts)
                     {
+                        <div class="d-flex justify-content-start align-items-center p-2 ">
+                            <div class="image-container p-1" style="max-width:10rem;">
+                                <img src="/images/Hamburger.jfif" class="h-100 w-100" />
+                            </div>
+                            <div class="flex-grow-1 p-1">
+                                <h5>
+                                    @selected.Title
+                                    <sub>@selected.Description</sub>
+                                </h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>@selected.Count</span>
+                                    <span>$ @selected.Price</span>
+                                </div>
 
-                        string activeCss = item == SelectedCategory ? "btn-primary" : "btn-outline-primary";
-                        <button type="button" class="btn @activeCss">
-                            @item
-                            <InputRadio TValue="string" Value="@item" class="opacity-0 " />
+                            </div>
 
-                        </button>
 
+                        </div>
                     }
-                </InputRadioGroup>
-
-            </div>
-        </div>
-
-
-        <div class="container mt-3" style="height:calc(100vh - 10rem); overflow-x:hidden;">
-
-            <div class="d-flex justify-content-around align-items-center flex-wrap col-12 mx-0 ">
-
-                @for (var i = 0; i < 100; i++)
-                {
-                    <div class="card rounded-4 transform-scale p-2" @onclick=OpenProductDetailDialog>
-                        <img class="card-img-top" src="/images/Hamburger.jfif" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text.</p>
+                </div>
+                <div class="card rounded-4 bg-muted mb-3 w-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>SubTotal:</span>
+                            <span></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Discount Sales:</span>
+                            <span></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Total Sales Tax:</span>
+                            <span></span>
                         </div>
                     </div>
-                }
+                    <div class="card-footer mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Total:</span>
+                            <span>@OrderTotalPrice()</span>
+                        </div>
+                    </div>
+                </div>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ShowPaymentMethodDialog">Charge $ @OrderTotalPrice() </MudButton>
+            </div>
+        }
+    </MudDrawer>
+    <MudMainContent Class="pt-0">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 mt-2 d-flex justify-content-start align-items-center">
+                    <h4>Order #5454 - Table(T-13 , T-15)</h4>
+                </div>
+                <div class="col-12 mt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-start align-items-center col-6 gap-x-3">
+                            <InputText @bind-Value=SearchValue class="form-control" placeholder="Search..." />
+                            <button class="btn btn-primary rounded-3" @onclick=SearchInProducts>Search</button>
+                        </div>
+
+                        <button class="btn btn-secondary me-4" @onclick=@(()=>IsDrawerOpen = !IsDrawerOpen)>&#127828;</button>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <div class="d-flex justify-content-start align-items-center gap-x-3">
+
+                        <InputRadioGroup Name="color" @bind-Value="SelectedCategory">
+
+                            @foreach (var item in Categories)
+                            {
+
+                                string activeCss = item == SelectedCategory ? "btn-primary" : "btn-outline-primary";
+                                <button type="button" class="btn @activeCss">
+                                    @item
+                                    <InputRadio TValue="string" Value="@item" class="opacity-0 " />
+
+                                </button>
+
+                            }
+                        </InputRadioGroup>
+
+                    </div>
+                </div>
+
+
+                <div class="container mt-3" style="height:calc(100vh - 10rem); overflow-x:hidden;">
+                    @if (IsLoading)
+                    {
+                        <div class="d-flex justify-contnet-center align-items-center">
+                            <Spinner />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-around align-items-center flex-wrap col-12    mx-0 " id="product-list">
+
+                            @foreach (var product in TempProductList)
+                            {
+                                <div class="card rounded-4 transform-scale p-2" @onclick=@(()=>OpenProductDetailDialog(product))>
+                                    <img class="card-img-top" src="/images/Hamburger.jfif" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@product.Title</h5>
+                                        <p class="card-text" style="max-width:10rem; text-overflow:ellipsis;">@product.Description</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-</div>
+
+    </MudMainContent>
+</MudLayout>
 
 
 <style>
-    .card {
-        box-shadow: 0px 5px 10px 4px rgba(0,0,0,0.1);
-        overflow: hidden;
-        background-color: white;
-        cursor: pointer;
+    #product-list {
+        transition: 500ms all ease;
     }
 
-    .card-img-top {
-        width:18vw;
-        box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
-    }
+        #product-list .card {
+            box-shadow: 0px 5px 10px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            background-color: white;
+            cursor: pointer;
+        }
 
-    .card.transform-scale {
-        transform: scale(0.8);
-        transition: all 150ms ease-in-out;
-        filter:blur(0.01rem);
-    }
+        #product-list .card-img-top {
+            width: 18vw;
+            box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+        }
 
-    .card:hover.transform-scale {
-        transform: scale(0.9);
-        transition: all 150ms ease-in-out;
-        filter: blur(0);
-    }
+        #product-list .card.transform-scale {
+            transform: scale(0.8);
+            transition: all 150ms ease-in-out;
+            filter: blur(0.01rem);
+        }
+
+        #product-list .card:hover.transform-scale {
+            transform: scale(0.9);
+            transition: all 150ms ease-in-out;
+            filter: blur(0);
+        }
 </style>

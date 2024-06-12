@@ -1,0 +1,46 @@
+﻿@using ProductPreview.Components.AppRoutes
+
+<MudDialog>
+    <TitleContent>
+        <h4>Payment Methods</h4>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+    </TitleContent>
+    <DialogContent>
+        <div style="max-width:10vw">
+
+            @if (IsPaymentProccessing)
+            {
+                <div class="d-flex justify-content-center align-items-center">
+
+                    <Spinner />
+
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                </div>
+
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.ShoppingBasket" />
+
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-100 py-2   rounded-4" Disabled="IsPaymentProccessing">Add to Bucket</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Inject] NavigationManager NavigationManager { get; set; } = default!;
+    private bool IsPaymentProccessing { get; set; } = false;
+
+
+    private void Close()
+    {
+
+        MudDialog.Close(() => NavigationManager.NavigateTo(ApplicationRoutes.PurchaseDetail));
+    }
+}

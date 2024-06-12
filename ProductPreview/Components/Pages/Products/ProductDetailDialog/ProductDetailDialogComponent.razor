@@ -1,4 +1,4 @@
-﻿<MudDialog Class="animated rounded-3 p-2 overflow-hidden">
+﻿<MudDialog Class="animated rounded-3 p-2 overflow-hidden" TitleClass="p-1">
     <TitleContent>
         <div class="d-flex justify-content-end align-items-center w-100">
             <span class="float-left btn" @onclick=Close>&#128473;</span>
@@ -18,42 +18,50 @@
                     <button class="btn btn-secondary" @onclick="@Decreament">-</button>
                 </div>
             </div>
-            <div class="col-6">
-                <h5>Cheese</h5>
-                <div class="w-75">
-                    <MudSelect T="string" Label="Chees" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="@("Parmejan")" />
-                        <MudSelectItem Value="@("Chedar")" />
-                        <MudSelectItem Value="@("Tabrizi")" />
-                    </MudSelect>
+            <div class="col-6 d-flex flex-column justify-content-between align-items-center">
+                <div class="w-100">
+                    <h5>Cheese</h5>
+                    <div class="w-75">
+                        <MudSelect T="string" Label="Chees" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem Value="@("Parmejan")" />
+                            <MudSelectItem Value="@("Chedar")" />
+                            <MudSelectItem Value="@("Tabrizi")" />
+                        </MudSelect>
+                    </div>
+                    <div class="mt-2">
+                        <label for="Desc">Description</label>
+                        <InputTextArea id="Desc" class="form-control" col="5" rows="5" @bind-Value=@Description />
+                    </div>
                 </div>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-100 py-2   rounded-4" OnClick="AddProductToBucket">Add to Bucket</MudButton>
 
-                <div class="mt-2">
-                    <label for="Desc">Description</label>
-                    <InputTextArea id="Desc" class="form-control" col="5" rows="10" @bind-Value=@Description />
-                </div>
             </div>
 
         </div>
 
     </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-50 py-3 rounded-4" OnClick="Close">Add to Bucket</MudButton>
-    </DialogActions>
 </MudDialog>
 
 
 
 
 @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    void Close() => MudDialog.Close(DialogResult.Ok(true));
+    void Close() => MudDialog.Close(DialogResult.Ok(false));
 
+    [Parameter]
+    public Product ProductModel { get; set; } = default!;
 
     private int Counter = 1;
 
     private string Description { get; set; } = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+    }
 
     private void Increament()
     {
@@ -62,6 +70,12 @@
     private void Decreament()
     {
         Counter--;
+    }
+
+
+    private void AddProductToBucket()
+    {
+        MudDialog.Close<Product>(ProductModel);
     }
 }
 

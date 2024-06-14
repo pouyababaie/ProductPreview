@@ -1,2 +1,8 @@
-﻿@page "/"
-
+﻿@using ProductPreview.Components.ApplicationRoutes
+@page "/"
+@inject NavigationManager NavigationManager
+<div class="container-fluid h-100">
+    <div class="d-flex justify-content-center align-items-center h-100 w-100">
+        <MudButton OnClick="@(()=>NavigationManager.NavigateTo(ApplicationRoutes.Products))">Navigate To Products</MudButton>
+    </div>
+</div>

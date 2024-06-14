@@ -16,18 +16,17 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
     private List<Product> TempProductList { get; set; } = new List<Product>();
     private bool IsLoading { get; set; } = false;
     private double TotalPrice { get; set; } = 0.0;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
 
-        IsLoading = true;
+
         GenerateListOfCategories();
 
-        GenerateListOfProducts();
+        await GenerateListOfProducts();
 
         TempProductList = ProductList;
 
-        IsLoading = false;
     }
 
     private void GenerateListOfCategories()
@@ -43,8 +42,12 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
         Categories.Add("Breakfast");
     }
 
-    private void GenerateListOfProducts()
+    private async Task GenerateListOfProducts()
     {
+        IsLoading = true;
+
+        await Task.Delay(500);
+
         ProductList.Clear();
         ProductList = new List<Product>() {
            new Product("Margherita Pizza", "Classic pizza with tomatoes, mozzarella cheese, and fresh basil.", count :0, price:8.99),
@@ -58,6 +61,8 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
             new Product("Chocolate Lava Cake", "Warm chocolate cake with a gooey molten center, served with vanilla ice cream.", count : 0, price : 7.99),
             new Product("Iced Lemon Tea", "Refreshing iced tea with a hint of lemon flavor.", count :0,price: 3.00)
         };
+
+        IsLoading = false;
     }
 
     private async Task OpenProductDetailDialog(Product selectedProduct)
@@ -80,6 +85,7 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
         {
             SelectedProducts.Add((Product)product);
 
+            await Task.Delay(200);
 
             IsDrawerOpen = true;
 
@@ -97,6 +103,7 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
 
         if (!result.Canceled)
         {
+            await Task.Delay(200);
 
         }
 

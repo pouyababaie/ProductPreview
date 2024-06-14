@@ -1,6 +1,6 @@
-﻿namespace ProductPreview.Components.AppRoutes
+﻿namespace ProductPreview.Components.ApplicationRoutes
 {
-    public  class ApplicationRoutes
+    public class ApplicationRoutes
     {
         public const string Root = "/";
 

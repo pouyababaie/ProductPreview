@@ -1,33 +1,57 @@
-﻿@using ProductPreview.Components.AppRoutes
+﻿@using ProductPreview.Components.ApplicationRoutes
+@using ProductPreview.Utilities
+
+@{
+    List<PaymentMethodsEnum> paymentMethods = Enum.GetValues<PaymentMethodsEnum>().Cast<PaymentMethodsEnum>().ToList();
+}
 
 <MudDialog>
     <TitleContent>
-        <h4>Payment Methods</h4>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+        <div class="d-flex justify-content-end align-items-center w-100">
+            <span class="float-left btn" @onclick=Close>&#128473;</span>
+        </div>
     </TitleContent>
     <DialogContent>
-        <div style="max-width:10vw">
 
-            @if (IsPaymentProccessing)
-            {
-                <div class="d-flex justify-content-center align-items-center">
+        @if (IsPaymentProccessing)
+        {
+            <div class="container">
+                <Spinner />
+                <h4 class="text-center mt-5">Waiting For Payment</h4>
+            </div>
+        }
+        else
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="text-center">Paymwnt Methods</h3>
+                        <p style="text-overflow:ellipsis" class="w-50 mx-auto">Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                    </div>
+                    <div class="col-12">
 
-                    <Spinner />
+                        <InputRadioGroup @bind-Value=PaymentMethod>
 
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                            <ChildContent>
+                                @foreach (var paymentMethod in paymentMethods)
+                                {
+                                    <label class="form-control d-flex justify-content-between align-items-center">
+                                        <h5>@Enum.GetName(paymentMethod)</h5>
+                                        <InputRadio TValue="PaymentMethodsEnum" Value="paymentMethod"></InputRadio>
+                                    </label>
+                                }
+                            </ChildContent>
+
+                        </InputRadioGroup>
+
+
+                    </div>
                 </div>
-
-            }
-            else
-            {
-                <MudIcon Icon="@Icons.Material.Filled.ShoppingBasket" />
-
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
-            }
-        </div>
+            </div>
+        }
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-100 py-2   rounded-4" Disabled="IsPaymentProccessing">Add to Bucket</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-100 py-2   rounded-4" Disabled="IsPaymentProccessing" OnClick="ProceedToPayment">Proceed to payment</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -35,12 +59,26 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
     [Inject] NavigationManager NavigationManager { get; set; } = default!;
+
+
+    public PaymentMethodsEnum PaymentMethod { get; set; }
+
+
     private bool IsPaymentProccessing { get; set; } = false;
 
 
+    private async Task ProceedToPayment()
+    {
+        IsPaymentProccessing = true;
+
+        await Task.Delay(1000);
+        IsPaymentProccessing = false;
+        MudDialog.Close();
+        NavigationManager.NavigateTo(ApplicationRoutes.PurchaseDetail);
+    }
     private void Close()
     {
 
-        MudDialog.Close(() => NavigationManager.NavigateTo(ApplicationRoutes.PurchaseDetail));
+        MudDialog.Close();
     }
 }

@@ -27,3 +27,59 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+.fadein {
+    animation: 500ms fadeIn ease-in-out;
+}
+
+.fadeout {
+    animation: 500ms fadeOut ease-in-out;
+}
+
+
+.mud-dialog-container {
+    -webkit-animation-duration: 500ms;
+
+    animation-duration: 500ms;
+
+    -webkit-animation-fill-mode: both;
+
+    animation-fill-mode: both;
+
+    -webkit-animation-name: fadeInDown;
+
+    animation-name: fadeInDown;
+
+    -webkit-animation-delay: 0.5s;
+
+    -moz-animation-delay: 0.5s;
+
+    animation-delay: 0.5s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(1.5rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(1.5rem);
+    }
+}
+
+

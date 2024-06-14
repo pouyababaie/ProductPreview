@@ -1,4 +1,5 @@
-﻿<MudDialog Class="animated rounded-3 p-2 overflow-hidden" TitleClass="p-1">
+﻿@inherits ComponentBase
+<MudDialog Class="rounded-3 p-2 overflow-hidden" TitleClass="p-1">
     <TitleContent>
         <div class="d-flex justify-content-end align-items-center w-100">
             <span class="float-left btn" @onclick=Close>&#128473;</span>
@@ -10,11 +11,11 @@
                 <div class="mt-2">
                     <img src="/images/Hamburger.jfif" class="w-100 h-100 rounded-4" />
                 </div>
-                <h5 class="d-flex justify-content-between align-items-center mt-2"><span>Special Burger</span> <span class="text-muted">$9.14</span></h5>
+                <h5 class="d-flex justify-content-between align-items-center mt-2"><span>Special Burger</span> <span class="text-muted">$ @ProductModel.Price</span></h5>
                 <p class="mt-2">Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
                 <div class="d-flex justify-content-start align-items-center gap-x-3 mt-2">
                     <button class="btn btn-primary" @onclick="@Increament">+</button>
-                    <h5>@Counter</h5>
+                    <h5>@ProductModel.Count</h5>
                     <button class="btn btn-secondary" @onclick="@Decreament">-</button>
                 </div>
             </div>
@@ -30,10 +31,10 @@
                     </div>
                     <div class="mt-2">
                         <label for="Desc">Description</label>
-                        <InputTextArea id="Desc" class="form-control" col="5" rows="5" @bind-Value=@Description />
+                        <InputTextArea id="Desc" class="form-control" col="5" rows="5" @bind-Value=@ProductModel.Description />
                     </div>
                 </div>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-100 py-2   rounded-4" OnClick="AddProductToBucket">Add to Bucket</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="w-100 py-2  rounded-4" Disabled=@(ProductModel.Count == 0) OnClick="AddProductToBucket">Add to Bucket</MudButton>
 
             </div>
 
@@ -42,46 +43,3 @@
     </DialogContent>
 </MudDialog>
 
-
-
-
-@code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
-
-    void Close() => MudDialog.Close(DialogResult.Ok(false));
-
-    [Parameter]
-    public Product ProductModel { get; set; } = default!;
-
-    private int Counter = 1;
-
-    private string Description { get; set; } = string.Empty;
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-    }
-
-    private void Increament()
-    {
-        Counter++;
-    }
-    private void Decreament()
-    {
-        Counter--;
-    }
-
-
-    private void AddProductToBucket()
-    {
-        MudDialog.Close<Product>(ProductModel);
-    }
-}
-
-
-<style>
-    .animated {
-        transition: 500ms all ease;
-    }
-</style>

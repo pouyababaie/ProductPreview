@@ -15,6 +15,7 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
     private List<Product> ProductList { get; set; } = new List<Product>();
     private List<Product> TempProductList { get; set; } = new List<Product>();
     private bool IsLoading { get; set; } = false;
+    private double TotalPrice { get; set; } = 0.0;
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -70,18 +71,37 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
             { "ProductModel", selectedProduct }
         };
 
-        var dialog = DialogService.Show<ProductDetailDialogComponent>("", dialogValue, dialogOptions);
+        IDialogReference dialog = DialogService.Show<ProductDetailDialogComponent>("", dialogValue, dialogOptions);
+
+        var result = await dialog.Result;
+        var product = result.Data;
+
+        if (!result.Cancelled && product != null)
+        {
+            SelectedProducts.Add((Product)product);
+
+
+            IsDrawerOpen = true;
+
+        }
+    }
+    private async Task ShowPaymentMethodDialog()
+    {
+        DialogOptions dialogOptions = new();
+        dialogOptions.MaxWidth = MaxWidth.ExtraSmall;
+        dialogOptions.DisableBackdropClick = true;
+
+        var dialog = DialogService.Show<PaymentMethodDialogComponent>("", dialogOptions);
 
         var result = await dialog.Result;
 
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
-            SelectedProducts.Add(selectedProduct);
+
         }
 
-
-        IsDrawerOpen = true;
     }
+
     private async Task SearchInProducts()
     {
         IsLoading = true;
@@ -94,19 +114,19 @@ public partial class ProductListComponent : Microsoft.AspNetCore.Components.Comp
         StateHasChanged();
     }
 
-    private void ShowPaymentMethodDialog()
-    {
-        DialogOptions dialogOptions = new();
-        dialogOptions.MaxWidth = MaxWidth.Small;
-        dialogOptions.DisableBackdropClick = true;
-
-        var dialog = DialogService.Show<PaymentMethodDialogComponent>("", dialogOptions);
-
-    }
 
     private double OrderTotalPrice()
     {
-        return SelectedProducts.Select(x => x.Price).Sum();
+        double price = 0;
+
+        foreach (Product product in SelectedProducts)
+        {
+            price += (product.Price * product.Count);
+        }
+
+
+
+        return price;
     }
 
 }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using MudBlazor.Services;
 using ProductPreview.Components;
 using ProductPreview.Services.Drawer;
@@ -10,7 +11,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
-builder.Services.AddSingleton<ApplicationDrawerService>(new ApplicationDrawerService());
+builder.Services.TryAddSingleton<IApplicationDrawer, ApplicationDrawerService>();
+
 
 var app = builder.Build();
 
@@ -29,5 +31,8 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+
+
 
 app.Run();

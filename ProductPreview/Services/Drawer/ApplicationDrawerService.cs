@@ -1,6 +1,6 @@
 ﻿namespace ProductPreview.Services.Drawer
 {
-    public class ApplicationDrawerService : IApplicationDrawer
+    public class ApplicationDrawerService : IApplicationDrawer 
     {
         public bool IsDrawerOpen { get; set; } = false;
 
@@ -8,5 +8,6 @@
         {
             IsDrawerOpen = state;
         }
+
     }
 }
